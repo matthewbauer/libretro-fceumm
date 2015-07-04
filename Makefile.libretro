@@ -1,6 +1,10 @@
 DEBUG = 0
 EXTERNAL_ZLIB = 0
 
+ifneq ($(EMSCRIPTEN),)
+	platform = emscripten
+endif
+
 ifeq ($(platform),)
 	platform = unix
 	ifeq ($(shell uname -a),)
@@ -214,6 +218,11 @@ else ifneq (,$(findstring armv,$(platform)))
 		PLATFORM_DEFINES += -mfloat-abi=hard
 	endif
 	PLATFORM_DEFINES += -DARM
+
+# emscripten
+else ifeq ($(platform), emscripten)
+	TARGET := $(TARGET_NAME)_libretro_emscripten.bc
+	PLATFORM_DEFINES += -DHAVE_ASPRINTF
 
 # Windows
 else
